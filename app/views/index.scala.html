@@ -1,0 +1,56 @@
+@(header: String, auth: Authentication, questionList: QuestionList)
+
+    @main(header, auth) {
+        <div class="row">
+            <ul class="nav nav-pills">
+                <li class="@if(questionList.isCategory(QuestionList.Category.RECENT)) {active} else {}"><a href="@routes.RecentQuestionsController.recent()">
+                    Recent</a></li>
+                <li class="@if(questionList.isCategory(QuestionList.Category.POPULAR)) {active} else {}"><a href="@routes.PopularQuestionsController.popular()">
+                    Popular</a></li>
+                <li class="@if(questionList.isCategory(QuestionList.Category.ACTIVE)) {active} else {}"><a href="@routes.ActiveQuestionsController.active()">
+                    Active</a></li>
+                <li class="@if(questionList.isCategory(QuestionList.Category.UNANSWERED)) {active} else {}"><a href="@routes.UnansweredQuestionsController.unanswered()">
+                    Unanswered</a></li>
+
+                @if(auth.isAuthenticated) {
+                    <li class="@if(questionList.isCategory(QuestionList.Category.ASKED_BY_ME)) {active} else {}"><a href="@routes.AskedByMeQuestionsController.askedByMe()">
+                        Asked</a></li>
+                    <li class="@if(questionList.isCategory(QuestionList.Category.FOLLOWED_BY_ME)) {active} else {}"><a href="@routes.FollowedQuestionsController.followedByMe()">
+                        Followed</a></li>
+                }
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="page-header">
+                <h1>@header</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="questions">
+                <table class="table">
+                    <tbody>
+                    @for(question <- questionList.getQuestions) {
+                        <tr>
+                            <td id="answerCount" class="count">@question.getAnswerCount <br/> answers</td>
+                            <td id="voteCount" class="count">@question.getVoteCount <br/> votes</td>
+                            <td id="viewCount" class="count">@question.getViewCount <br/> views</td>
+                            <td id="questionTitle"><a href="@routes.QuestionController.display(question.getId)">@question.getTitle</a></td>
+                            <td id="questionAuthor">asked by
+                                <a href="@routes.UserProfileController.display(question.getAuthor.getLogin)">@question.getAuthor.getDisplayName()</a>
+                                <br/> @util.DateFormatter.format(question.getDate) </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-lg-offset-4">
+            <ul class="pager">
+                <li class="previous"><a class="btn btn-sm @if(questionList.getBackwardLink == null) {disabled} else {}" href="@questionList.getBackwardLink"><span class="glyphicon glyphicon-backward"></span></a></li>
+                <li class="next"><a class="btn btn-sm @if(questionList.getForwardLink == null) {disabled} else {}" href="@questionList.getForwardLink"><span class="glyphicon glyphicon-forward"></span></a><li>
+            </ul>
+        </div>
+    }

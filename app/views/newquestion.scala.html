@@ -1,0 +1,23 @@
+@(form: Form[Question], auth: Authentication)
+
+@main("New Question", auth) {
+    <div class="page-header">
+        <h1>New Question</h1>
+    </div>
+
+    <div class="row">
+    @helper.form(action = routes.NewQuestionController.saveQuestion(), 'role -> "form", 'class -> "col-lg-6 col-lg-offset-3") {
+        <div class="form-group">
+            <label for="questionTitle">Title</label>
+            <input class="form-control" id="questionTitle" type="text" name="title" value="@form("title").value" style="width: 100%;"/>
+        </div>
+        <div class="form-group">
+            <label for="questionText">Text</label>
+            <textarea class="form-control" id="questionText" name="text" rows="10">@form("text").value</textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg pull-right">Add a Question</button>
+        </div>
+    }
+    </div>
+}

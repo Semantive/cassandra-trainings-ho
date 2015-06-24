@@ -1,0 +1,47 @@
+@(user: User, auth: Authentication)
+
+    @main("Profile of " + user.getDisplayName, auth) {
+
+        <div class="page-header">
+            <h1>@user.getDisplayName &nbsp;profile</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 col-md-offset-2">
+                <a href="#" class="thumbnail">
+                    <img data-src="holder.js/200x200" alt="..." class="img-responsive"/>
+                </a>
+            </div>
+            <div class="col-md-5">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><label>Login</label></td><td>@user.getLogin</td>
+                        </tr>
+                        <tr>
+                            <td><label>First name</label></td><td>@user.getFirstName</td>
+                        </tr>
+                        <tr>
+                            <td><label>Last name</label></td><td>@user.getLastName</td>
+                        </tr>
+                        <tr>
+                            <td><label>Email</label></td><td>@user.getEmail</td>
+                        </tr>
+                        <tr>
+                            <td><label>Reputation</label></td><td>@user.getReputation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if(user.getLogin == auth.getCurrentUser.getLogin) {
+            <div class="row">
+                <div class="col-md-5 col-md-offset-5">
+                    <a class="btn-primary btn-lg pull-right" href="@routes.UserProfileController.edit().url">Edit</a>
+                </div>
+            </div>
+        }
+
+    }
+
+

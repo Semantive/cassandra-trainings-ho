@@ -1,0 +1,79 @@
+@(question: QuestionWithAnswers, form: Form[Answer], auth: Authentication)
+
+    @main(question.getTitle, auth) {
+        <div class="row">
+            <div class="col-lg-1">
+                <div class="btn-group-vertical">
+                    @if(auth.isAuthenticated) {
+                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteQuestion(question.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                    }
+                    <button class="btn btn-default btn-lg"><strong class="text-success">@question.getVoteCount</strong></button>
+                    @if(auth.isAuthenticated) {
+                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteQuestion(question.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                        <a class="btn btn-default btn-lg"><span class="glyphicon @if(question.isFollow) {glyph-icon-star} else {glyphicon-star-empty}"></span></a>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-11">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                    @question.getTitle
+                    </div>
+                    <div class="panel-body">
+                        <p class="text">@question.getText</p>
+                    </div>
+                    <div class="panel-footer">
+                        <small class="pull-right">
+                            Asked by @question.getAuthor.getDisplayName() @util.DateFormatter.format(question.getDate)</small>&nbsp;
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <h3>@question.getAnswers.size Answer(s)</h3>
+        </div>
+
+        @for(answer <- question.getAnswers) {
+            <div class="row">
+                <div class="col-lg-1">
+                    <div class="btn-group-vertical">
+                        @if(auth.isAuthenticated) {
+                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteAnswer(question.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                        }
+                    <button type="button" class="btn btn-default btn-lg"><strong class="text-success">@answer.getVoteCount</strong></button>
+                        @if(auth.isAuthenticated) {
+                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteAnswer(question.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-11">
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <p class="text">@answer.getText</p>
+                        </div>
+                        <div class="panel-footer">
+                            <small class="pull-right">
+                        Answered by @answer.getAuthor.getDisplayName @util.DateFormatter.format(answer.getDate)</small> &nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if(auth.isAuthenticated) {
+            <div id="answerForm" class="row">
+                <div class="page-header">
+                    <h3>Post Answer</h3>
+                </div>
+                @helper.form(action = routes.QuestionController.postAnswer(question.getId), 'role -> "form") {
+                    <div class="form-group">
+                        <textarea class="form-control" id="answerArea" name="text">@form("text").value</textarea>
+                    </div>
+
+                    <button type="submit" value="Submit" class="btn btn-primary btn-lg">Submit</button>
+                }
+            </div>
+        }
+
+    }

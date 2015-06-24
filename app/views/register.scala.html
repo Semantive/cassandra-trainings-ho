@@ -1,0 +1,84 @@
+@(form: Form[NewUser], auth: Authentication)
+
+    @main("Register", auth) {
+
+        @helper.form(routes.LoginController.register(), 'class -> "form-horizontal", 'role -> "form") {
+            <div class="page-header">
+                <h1>Register</h1>
+            </div>
+
+            @if(form.hasGlobalErrors) {
+                <div class="alert alert-danger col-lg-8 col-lg-offset-2">
+                @for(error <- form.globalErrors) {
+                    @error.message <br/>
+                }
+                </div>
+            }
+
+            @if(form.hasErrors) {
+                <div class="alert alert-warning col-lg-8 col-lg-offset-2">
+                    Some fields are missing of invalid. Please fill out the form correctly.
+                </div>
+            }
+
+            <div class="form-group @if(form("login").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="loginField">Login</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="loginField" type="text" name="login" placeholder="enter login here..." value="@form("login").value"/>
+                </div>
+                @for(error <- form("login").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+            <div class="form-group @if(form("firstName").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="firstNameField">First name</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="firstNameField" type="text" name="firstName" placeholder="enter your first name..." value="@form("firstName").value"/>
+                </div>
+                @for(error <- form("firstName").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+            <div class="form-group @if(form("lastName").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="lastNameField">Last name</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="lastNameField" type="text" name="lastName" placeholder="enter your last name..." value="@form("lastName").value"/>
+                </div>
+                @for(error <- form("lastName").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+            <div class="form-group @if(form("email").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="emailField">Email</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="emailField" type="email" name="email" placeholder="enter your email..." value="@form("email").value"/>
+                </div>
+                @for(error <- form("email").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+            <div class="form-group @if(form("password").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="passwordField">Password</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="passwordField" type="password" name="password" placeholder="enter your password..."/>
+                </div>
+                @for(error <- form("password").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+            <div class="form-group @if(form("password2").errors.nonEmpty) {has-error} else {}">
+                <label class="col-lg-4 control-label" for="password2Field">Retype password</label>
+                <div class="col-lg-4">
+                    <input class="form-control" id="password2Field" type="password" name="password2" placeholder="retype your password..."/>
+                </div>
+                @for(error <- form("password2").errors) {
+                    <span class="help-block">@error.message</span>
+                }
+            </div>
+
+            <div class="col-lg-4 col-lg-offset-4">
+                <button type="submit" name="_register" class="btn btn-primary">Register</button>
+                <button type="submit" name="_cancel" class="btn btn-default">Cancel</button>
+            </div>
+        }
+    }

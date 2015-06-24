@@ -1,0 +1,130 @@
+
+body {
+    font-family: sans-serif;
+    font-size: 11pt;
+    padding: 0px;
+    margin: 0px;
+    background-color: white;
+}
+
+h1 {
+    font-size: 16pt;
+}
+
+a {
+    text-decoration: none;
+    color: #4466FF;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #4466FF;
+}
+
+#container {
+    width: 70em;
+    background-color: white;
+    margin:auto;
+}
+
+#content {
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-top: 2em;
+
+}
+
+#logo {
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+#commandBar {
+    background-color: #EEEEEE;
+    padding: 0.5em;
+    margin-top: 2em;
+}
+
+#commandBar span {
+    padding: 0.5em;
+    vertical-align: middle;
+}
+
+#questions table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#questions td  {
+    border-bottom: 1px solid #AAAAAA;
+    border-top: 1px solid #AAAAAA;
+    padding: 0.5em;
+}
+
+#questions th  {
+    border-bottom: 1px solid #AAAAAA;
+
+    padding: 0.5em;
+    font-weight: normal;
+    #background-color: #EEEEEE;
+}
+
+#questionTitle {
+    width: 40em;
+    font-weight: bold;
+}
+
+#questionTitle a {
+    padding-left: 1em;
+}
+
+#questions #questionAuthor {
+    font-size: 10pt;
+    color: #555555;
+    text-align: right;
+}
+
+#answerArea {
+    width: 60em;
+    height: 10em;
+}
+
+#answerForm {
+    margin-top: 3em;
+}
+
+#question {
+    border-bottom: 1px solid #AAAAAA;
+    margin-bottom: 3em;
+}
+
+#question .author {
+    text-align: right;
+    width: 100%;
+}
+
+.answer .author {
+    text-align: right;
+    width: 100%;
+}
+
+#ask {
+    margin-left: 1em;
+    margin-right: 1em;
+    float: right;
+}
+
+
+.count {
+    text-align: center;
+    width: 2.5em;
+}
+
+.count .label {
+    font-size: 10pt;
+
+}
+
+.error {
+    color: red;
+}

@@ -1,0 +1,24 @@
+@(hosts: Collection[com.datastax.driver.core.Host], auth: Authentication)
+
+@main("Cassandra Connection Status", auth) {
+
+<div class="header">
+    <h1>Cassandra Connection Status</h1>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Host address</th>
+            <th>Datacenter</th>
+            <th>Rack</th>
+        </tr>
+    @for(h <- hosts) {
+        <tr>
+            <td>@h.getAddress()</td><td>@h.getDatacenter()</td><td>@h.getRack()</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+}

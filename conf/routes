@@ -1,0 +1,61 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /questions/recent                   @controllers.RecentQuestionsController.recent()
+GET     /questions/recent/after/:id         @controllers.RecentQuestionsController.recentAfter(id: String)
+GET     /questions/recent/before/:id        @controllers.RecentQuestionsController.recentBefore(id: String)
+
+GET     /questions/popular                  @controllers.PopularQuestionsController.popular()
+GET     /questions/popular/after/:id        @controllers.PopularQuestionsController.popularAfter(id: String)
+GET     /questions/popular/before/:id       @controllers.PopularQuestionsController.popularBefore(id: String)
+
+GET     /questions/active                   @controllers.ActiveQuestionsController.active()
+GET     /questions/active/after/:id         @controllers.ActiveQuestionsController.activeAfter(id: String)
+GET     /questions/active/before/:id        @controllers.ActiveQuestionsController.activeBefore(id: String)
+
+GET     /questions/unanswered               @controllers.UnansweredQuestionsController.unanswered()
+GET     /questions/unanswered/after/:id     @controllers.UnansweredQuestionsController.unansweredAfter(id: String)
+GET     /questions/unanswered/before/:id    @controllers.UnansweredQuestionsController.unansweredBefore(id: String)
+
+GET     /questions/my                       @controllers.AskedByMeQuestionsController.askedByMe()
+GET     /questions/my/after/:id             @controllers.AskedByMeQuestionsController.askedByMeAfter(id: String)
+GET     /questions/my/before/:id            @controllers.AskedByMeQuestionsController.askedByMeBefore(id: String)
+
+GET     /questions/followed                 @controllers.FollowedQuestionsController.followedByMe()
+GET     /questions/followed/after/:id       @controllers.FollowedQuestionsController.followedByMeAfter(id: String)
+GET     /questions/followed/before/:id      @controllers.FollowedQuestionsController.followedByMeBefore(id: String)
+
+GET     /questions/new                      @controllers.NewQuestionController.newQuestionForm()
+POST    /questions/new/save                 @controllers.NewQuestionController.saveQuestion()
+
+# Login page
+GET     /login                              @controllers.LoginController.displayLoginPage()
+POST    /login                              @controllers.LoginController.login()
+GET     /register                           @controllers.LoginController.displayRegistrationPage()
+POST    /register                           @controllers.LoginController.register()
+GET     /logout                             @controllers.LoginController.logout()
+
+# User profile page
+GET     /profile/view/:id                   @controllers.UserProfileController.display(id: String)
+GET     /profile/edit                       @controllers.UserProfileController.edit()
+POST    /profile/save                       @controllers.UserProfileController.saveProfile()
+
+# Question page
+GET     /question/:id                       @controllers.QuestionController.display(id: String)
+POST    /question/:id                       @controllers.QuestionController.postAnswer(id: String)
+
+GET     /question/:id/upvote                @controllers.QuestionController.upvoteQuestion(id: String)
+GET     /question/:id/downvote              @controllers.QuestionController.downvoteQuestion(id: String)
+GET     /question/:id/upvote/:aid           @controllers.QuestionController.upvoteAnswer(id: String, aid: String)
+GET     /question/:id/downvote/:aid         @controllers.QuestionController.downvoteAnswer(id: String, aid: String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                       controllers.Assets.at(path="/public", file)
+
+# Connection checking
+GET     /status                             @controllers.StatusController.displayStatus()
+
+# Default route
+GET     /                                   @controllers.RecentQuestionsController.recent()

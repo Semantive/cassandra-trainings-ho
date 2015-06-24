@@ -5,8 +5,8 @@ Application Stub for the Cassandra Workshop
 
 Running
 -------
-1. Install Play Framework 2.2.3 from here: http://www.playframework.com/
-2. Change working directory to the project root (wj13-cassandra)
+1. Install Play Framework 2.3.9 from here: http://www.playframework.com/
+2. Change working directory to the project root (cassandra-trainings)
 3. Run: play run
 4. Open http://localhost:9000/ with your browser.
 

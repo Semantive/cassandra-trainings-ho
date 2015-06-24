@@ -12,7 +12,7 @@ Running
 
 IntelliJ IDEA setup
 --------------------
-1. Run: play idea
+1. Run: activator idea
 2. Open the project with IDEA
 3. Fix source roots:
    - app

@@ -1,7 +1,7 @@
 package controllers;
 
 import dao.ActiveQuestionsDAO;
-import models.ACtiveQuestion;
+import models.ActiveQuestion;
 import models.Direction;
 import models.QuestionList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,29 +18,29 @@ public class ActiveQuestionsController extends GenericController {
     private ActiveQuestionsDAO activeQuestionsDAO;
 
     public Result active() {
-        List<ACtiveQuestion> questions = getList(activeQuestionsDAO.findAll());
+        List<ActiveQuestion> questions = getList(activeQuestionsDAO.findAll());
         return activeInternal(questions);
     }
 
-    private List<ACtiveQuestion> getList(Iterable<ACtiveQuestion> iterable) {
-        List<ACtiveQuestion> list = new ArrayList<>();
-        for (ACtiveQuestion el: iterable) {
+    private List<ActiveQuestion> getList(Iterable<ActiveQuestion> iterable) {
+        List<ActiveQuestion> list = new ArrayList<>();
+        for (ActiveQuestion el: iterable) {
             list.add(el);
         }
         return list;
     }
 
     public Result activeAfter(String questionId) {
-        List<ACtiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.AFTER.name());
+        List<ActiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.AFTER.name());
         return activeInternal(questions);
     }
 
     public Result activeBefore(String questionId) {
-        List<ACtiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.BEFORE.name());
+        List<ActiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.BEFORE.name());
         return activeInternal(questions);
     }
 
-    private Result activeInternal(List<ACtiveQuestion> questions) {
+    private Result activeInternal(List<ActiveQuestion> questions) {
         QuestionList list = QuestionList.fromActiveQuestions(QuestionList.Category.ACTIVE, questions);
         if (!questions.isEmpty()) {
             list.setForwardLink(routes.ActiveQuestionsController.activeAfter(questions.get(questions.size() - 1).getId()).url());

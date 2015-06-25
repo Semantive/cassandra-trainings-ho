@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionList {
@@ -8,7 +9,7 @@ public class QuestionList {
         return category;
     }
 
-    public List<Question> getQuestions() {
+    public List<ListableQuestion> getQuestions() {
         return questions;
     }
 
@@ -31,7 +32,7 @@ public class QuestionList {
     public enum Category { RECENT, POPULAR, ACTIVE, UNANSWERED, ASKED_BY_ME, FOLLOWED_BY_ME }
 
     private final Category category;
-    private final List<Question> questions;
+    private final List<ListableQuestion> questions;
 
     private String forwardLink = null;
     private String backwardLink = null;
@@ -40,8 +41,22 @@ public class QuestionList {
         return getCategory().equals(buttonCategory);
     }
 
-    public QuestionList(Category category, List<Question> questions) {
+    public static QuestionList fromQuestions(Category category, List<Question> questions) {
+        List<ListableQuestion> listableQuestions = new ArrayList<>();
+        listableQuestions.addAll(questions);
+        return new QuestionList(category, listableQuestions);
+    }
+
+    public static QuestionList fromActiveQuestions(Category category, List<ActiveQuestion> questions) {
+        List<ListableQuestion> listableQuestions = new ArrayList<>();
+        listableQuestions.addAll(questions);
+        return new QuestionList(category, listableQuestions);
+    }
+
+    public QuestionList(Category category, List<ListableQuestion> questions) {
         this.category = category;
         this.questions = questions;
     }
+
+
 }

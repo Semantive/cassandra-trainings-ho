@@ -35,7 +35,7 @@ public class AskedByMeQuestionsController extends GenericController {
     }
 
     private Result askedbyInternal(List<Question> questions) {
-        QuestionList list = new QuestionList(QuestionList.Category.ASKED_BY_ME, questions);
+        QuestionList list = QuestionList.fromQuestions(QuestionList.Category.ASKED_BY_ME, questions);
         if (!questions.isEmpty()) {
             list.setForwardLink(routes.AskedByMeQuestionsController.askedByMeAfter(questions.get(questions.size() - 1).getId()).url());
             list.setBackwardLink(routes.AskedByMeQuestionsController.askedByMeBefore(questions.get(questions.size() - 1).getId()).url());

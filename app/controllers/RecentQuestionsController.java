@@ -32,7 +32,7 @@ public class RecentQuestionsController extends GenericController {
     }
 
     private Result recentInternal(List<Question> questions) {
-        QuestionList list = new QuestionList(QuestionList.Category.RECENT, questions);
+        QuestionList list = QuestionList.fromQuestions(QuestionList.Category.RECENT, questions);
         if (!questions.isEmpty()) {
             list.setForwardLink(routes.RecentQuestionsController.recentAfter(questions.get(questions.size() - 1).getId()).url());
             list.setBackwardLink(routes.RecentQuestionsController.recentBefore(questions.get(questions.size() - 1).getId()).url());

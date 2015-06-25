@@ -1,18 +1,11 @@
 package models;
 
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
-
 import java.util.Date;
 
-@Table
-public class Question {
+public class Question implements ListableQuestion {
 
-    @PrimaryKey
     private String id;
 
-    @Transient
     private User author;
 
     private String title;
@@ -74,6 +67,16 @@ public class Question {
 
     public Date getDate() {
         return date;
+    }
+
+    @Override
+    public String getAuthorLogin() {
+        return getAuthor().getLogin();
+    }
+
+    @Override
+    public String getAuthorDisplayName() {
+        return getAuthor().getDisplayName();
     }
 
     public void setDate(Date date) {

@@ -19,12 +19,12 @@ public class CassandraClient {
 
     private CassandraClient() {
         cluster = Cluster.builder()
-                .addContactPoint("localhost")
+                .addContactPoint("127.0.0.1")
                 .withReconnectionPolicy(new ConstantReconnectionPolicy(200))
                 .build();
 
         createSchema();
-        session = cluster.connect("ho");
+        session = cluster.connect("workshop");
     }
 
     public Cluster getCluster() {
@@ -41,14 +41,6 @@ public class CassandraClient {
 
     private void createSchema() {
         Session s = cluster.connect();
-
-        s.execute(
-                "CREATE KEYSPACE IF NOT EXISTS ho\n" +
-                        "WITH REPLICATION = {\n" +
-                        "\t'class' : 'SimpleStrategy', 'replication_factor' : 1\n" +
-                        "}\n" +
-                        "AND DURABLE_WRITES = true;"
-        );
 
         s.execute(
                 "CREATE TABLE IF NOT EXISTS ho.user ( \n" +

@@ -38,7 +38,7 @@
                             <td id="viewCount" class="count">@question.getViewCount <br/> views</td>
                             <td id="questionTitle"><a href="@routes.QuestionController.display(question.getId)">@question.getTitle</a></td>
                             <td id="questionAuthor">asked by
-                                <a href="@routes.UserProfileController.display(question.getAuthor.getLogin)">@question.getAuthor.getDisplayName()</a>
+                                <a href="@routes.UserProfileController.display(question.getAuthorLogin)">@question.getAuthorDisplayName</a>
                                 <br/> @util.DateFormatter.format(question.getDate) </td>
                         </tr>
                     }

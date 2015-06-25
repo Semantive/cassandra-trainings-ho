@@ -51,4 +51,11 @@ public class SpringConfig extends AbstractCassandraConfiguration {
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
         return Collections.singletonList(createKeyspace().name(getKeyspaceName()).withSimpleReplication().ifNotExists());
     }
+
+    @Override
+    public String[] getEntityBasePackages() {
+        return new String[] {
+                "models"
+        };
+    }
 }

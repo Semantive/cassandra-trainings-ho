@@ -43,7 +43,7 @@ public class CassandraClient {
         Session s = cluster.connect();
 
         s.execute(
-                "CREATE TABLE IF NOT EXISTS ho.user ( \n" +
+                "CREATE TABLE IF NOT EXISTS workshop.user ( \n" +
                         "\tlogin text,\n" +
                         "\tfirst_name text,\n" +
                         "\tlast_name text,\n" +

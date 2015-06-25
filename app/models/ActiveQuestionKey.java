@@ -7,7 +7,6 @@ import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author Piotr Jędruszuk
@@ -16,30 +15,22 @@ import java.util.UUID;
 public class ActiveQuestionKey implements Serializable {
 
     @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private UUID id;
-
+    private String questionId;
 
     @PrimaryKeyColumn(name = "lastUpdated", ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
     private Date lastUpdated;
 
-    @PrimaryKeyColumn(name = "name", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
-    private String name;
-
-    public ActiveQuestionKey() {
-    }
-
-    public ActiveQuestionKey(UUID id, Date lastUpdated, String name) {
-        this.id = id;
+    public ActiveQuestionKey(String questionId, Date lastUpdated) {
+        this.questionId = questionId;
         this.lastUpdated = lastUpdated;
-        this.name = name;
     }
 
-    public UUID getId() {
-        return id;
+    public String getQuestionId() {
+        return questionId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
     }
 
     public Date getLastUpdated() {
@@ -48,13 +39,5 @@ public class ActiveQuestionKey implements Serializable {
 
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

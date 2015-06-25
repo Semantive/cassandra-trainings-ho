@@ -47,7 +47,7 @@ public class QuestionList {
         return new QuestionList(category, listableQuestions);
     }
 
-    public static QuestionList fromActiveQuestions(Category category, List<ActiveQuestion> questions) {
+    public static QuestionList fromActiveQuestions(Category category, List<ACtiveQuestion> questions) {
         List<ListableQuestion> listableQuestions = new ArrayList<>();
         listableQuestions.addAll(questions);
         return new QuestionList(category, listableQuestions);

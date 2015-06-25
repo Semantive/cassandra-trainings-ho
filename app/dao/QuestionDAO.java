@@ -1,6 +1,5 @@
 package dao;
 
-import com.datastax.driver.core.utils.UUIDs;
 import models.Answer;
 import models.Question;
 import models.QuestionWithAnswers;
@@ -14,7 +13,6 @@ import java.util.Date;
 public class QuestionDAO {
     public void createNewQuestion(Question question) {
         // TODO generate identifier and create a question in a database
-        question.setId(UUIDs.random().toString());
     }
 
     public void incrementViewsNumber(String questionId) {

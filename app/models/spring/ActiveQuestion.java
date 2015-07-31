@@ -1,5 +1,6 @@
-package models;
+package models.spring;
 
+import models.ListableQuestion;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 

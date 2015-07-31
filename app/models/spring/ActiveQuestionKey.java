@@ -1,4 +1,4 @@
-package models;
+package models.spring;
 
 import org.springframework.cassandra.core.Ordering;
 import org.springframework.cassandra.core.PrimaryKeyType;

@@ -1,7 +1,7 @@
 package controllers;
 
-import dao.ActiveQuestionsDAO;
-import models.ActiveQuestion;
+import dao.spring.ActiveQuestionsDAO;
+import models.spring.ActiveQuestion;
 import models.Direction;
 import models.QuestionList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ public class ActiveQuestionsController extends GenericController {
     private Result activeInternal(List<ActiveQuestion> questions) {
         QuestionList list = QuestionList.fromActiveQuestions(QuestionList.Category.ACTIVE, questions);
         if (!questions.isEmpty()) {
-            list.setForwardLink(routes.ActiveQuestionsController.activeAfter(questions.get(questions.size() - 1).getId()).url());
-            list.setBackwardLink(routes.ActiveQuestionsController.activeBefore(questions.get(questions.size() - 1).getId()).url());
+            list.setForwardLink(controllers.routes.ActiveQuestionsController.activeAfter(questions.get(questions.size() - 1).getId()).url());
+            list.setBackwardLink(controllers.routes.ActiveQuestionsController.activeBefore(questions.get(questions.size() - 1).getId()).url());
         }
         return ok(index.render("Active Questions", getAuthentication(), list));
     }

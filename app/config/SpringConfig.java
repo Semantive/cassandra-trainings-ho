@@ -55,7 +55,7 @@ public class SpringConfig extends AbstractCassandraConfiguration {
     @Override
     public String[] getEntityBasePackages() {
         return new String[] {
-                "models"
+                "models.spring"
         };
     }
 }

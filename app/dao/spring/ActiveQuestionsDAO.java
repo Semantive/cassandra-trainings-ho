@@ -1,6 +1,6 @@
-package dao;
+package dao.spring;
 
-import models.ActiveQuestion;
+import models.spring.ActiveQuestion;
 import org.springframework.data.cassandra.repository.Query;
 import org.springframework.data.cassandra.repository.TypedIdCassandraRepository;
 import org.springframework.stereotype.Repository;

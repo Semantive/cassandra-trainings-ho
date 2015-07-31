@@ -34,8 +34,8 @@ public class UnansweredQuestionsController extends GenericController {
     private Result unansweredInternal(List<Question> questions) {
         QuestionList list = QuestionList.fromQuestions(QuestionList.Category.UNANSWERED, questions);
         if (!questions.isEmpty()) {
-            list.setForwardLink(routes.UnansweredQuestionsController.unansweredAfter(questions.get(questions.size() - 1).getId()).url());
-            list.setBackwardLink(routes.UnansweredQuestionsController.unansweredBefore(questions.get(questions.size() - 1).getId()).url());
+            list.setForwardLink(controllers.routes.UnansweredQuestionsController.unansweredAfter(questions.get(questions.size() - 1).getId()).url());
+            list.setBackwardLink(controllers.routes.UnansweredQuestionsController.unansweredBefore(questions.get(questions.size() - 1).getId()).url());
         }
         return ok(index.render("Unanswered Questions", getAuthentication(), list));
     }

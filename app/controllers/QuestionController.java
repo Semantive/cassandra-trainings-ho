@@ -37,37 +37,37 @@ public class QuestionController extends GenericController {
             answer.setVoteCount(0);
             answerDAO.saveAnswer(id, answer);
         }
-        return redirect(routes.QuestionController.display(id));
+        return redirect(controllers.routes.QuestionController.display(id));
     }
 
     public Result upvoteQuestion(String questionId) {
         questionDAO.incQuestionVotes(questionId);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result upvoteAnswer(String questionId, String answerId) {
         answerDAO.incAnswerVotes(questionId, answerId);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result downvoteQuestion(String questionId) {
         questionDAO.decQuestionVotes(questionId);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result downvoteAnswer(String questionId, String answerId) {
         answerDAO.decAnswerVotes(questionId, answerId);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result followQuestion(String questionId) {
         questionDAO.setFollowStatus(getCurrentUserId(), questionId, true);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result unfollowQuestion(String questionId) {
         questionDAO.setFollowStatus(getCurrentUserId(), questionId, false);
-        return redirect(routes.QuestionController.display(questionId));
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
 }

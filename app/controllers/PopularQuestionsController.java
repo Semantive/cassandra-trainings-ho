@@ -34,8 +34,8 @@ public class PopularQuestionsController extends GenericController {
     private Result popularInternal(List<Question> questions) {
         QuestionList list = QuestionList.fromQuestions(QuestionList.Category.POPULAR, questions);
         if (!questions.isEmpty()) {
-            list.setForwardLink(routes.PopularQuestionsController.popularAfter(questions.get(questions.size() - 1).getId()).url());
-            list.setBackwardLink(routes.PopularQuestionsController.popularBefore(questions.get(questions.size() - 1).getId()).url());
+            list.setForwardLink(controllers.routes.PopularQuestionsController.popularAfter(questions.get(questions.size() - 1).getId()).url());
+            list.setBackwardLink(controllers.routes.PopularQuestionsController.popularBefore(questions.get(questions.size() - 1).getId()).url());
         }
         return ok(index.render("Popular Questions", getAuthentication(), list));
     }

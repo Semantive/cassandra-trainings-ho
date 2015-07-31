@@ -37,8 +37,8 @@ public class FollowedQuestionsController extends GenericController {
     private Result followedInternal(List<Question> questions) {
         QuestionList list = QuestionList.fromQuestions(QuestionList.Category.FOLLOWED_BY_ME, questions);
         if (!questions.isEmpty()) {
-            list.setForwardLink(routes.FollowedQuestionsController.followedByMeAfter(questions.get(questions.size() - 1).getId()).url());
-            list.setBackwardLink(routes.FollowedQuestionsController.followedByMeBefore(questions.get(questions.size() - 1).getId()).url());
+            list.setForwardLink(controllers.routes.FollowedQuestionsController.followedByMeAfter(questions.get(questions.size() - 1).getId()).url());
+            list.setBackwardLink(controllers.routes.FollowedQuestionsController.followedByMeBefore(questions.get(questions.size() - 1).getId()).url());
         }
         return ok(index.render("Questions Followed By Me", getAuthentication(), list));
     }

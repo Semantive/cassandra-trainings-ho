@@ -9,6 +9,7 @@ import play.mvc.Result;
 import views.html.index;
 
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class UnansweredQuestionsController extends GenericController {
@@ -21,12 +22,12 @@ public class UnansweredQuestionsController extends GenericController {
         return unansweredInternal(questions);
     }
 
-    public Result unansweredAfter(String questionId) {
+    public Result unansweredAfter(UUID questionId) {
         List<Question> questions = unansweredQuestionsDAO.getUnansweredQuestions(questionId, Direction.AFTER);
         return unansweredInternal(questions);
     }
 
-    public Result unansweredBefore(String questionId) {
+    public Result unansweredBefore(UUID questionId) {
         List<Question> questions = unansweredQuestionsDAO.getUnansweredQuestions(questionId, Direction.BEFORE);
         return unansweredInternal(questions);
     }

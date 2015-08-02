@@ -9,6 +9,7 @@ import play.mvc.Result;
 import views.html.question;
 
 import java.util.Date;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class QuestionController extends GenericController {
@@ -19,13 +20,13 @@ public class QuestionController extends GenericController {
     @Autowired
     private AnswerDAO answerDAO;
 
-    public Result display(String id) {
+    public Result display(UUID id) {
         Form<Answer> form = new Form<Answer>(Answer.class);
         questionDAO.incrementViewsNumber(id);
         return ok(question.render(questionDAO.getQuestion(id), form, getAuthentication()));
     }
 
-    public Result postAnswer(String id) {
+    public Result postAnswer(UUID id) {
         if (!isAuthenticated())
             return badRequest("You must be authenticated to post answers");
 
@@ -40,32 +41,32 @@ public class QuestionController extends GenericController {
         return redirect(controllers.routes.QuestionController.display(id));
     }
 
-    public Result upvoteQuestion(String questionId) {
+    public Result upvoteQuestion(UUID questionId) {
         questionDAO.incQuestionVotes(questionId);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result upvoteAnswer(String questionId, String answerId) {
+    public Result upvoteAnswer(UUID questionId, String answerId) {
         answerDAO.incAnswerVotes(questionId, answerId);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result downvoteQuestion(String questionId) {
+    public Result downvoteQuestion(UUID questionId) {
         questionDAO.decQuestionVotes(questionId);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result downvoteAnswer(String questionId, String answerId) {
+    public Result downvoteAnswer(UUID questionId, String answerId) {
         answerDAO.decAnswerVotes(questionId, answerId);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result followQuestion(String questionId) {
+    public Result followQuestion(UUID questionId) {
         questionDAO.setFollowStatus(getCurrentUserId(), questionId, true);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result unfollowQuestion(String questionId) {
+    public Result unfollowQuestion(UUID questionId) {
         questionDAO.setFollowStatus(getCurrentUserId(), questionId, false);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }

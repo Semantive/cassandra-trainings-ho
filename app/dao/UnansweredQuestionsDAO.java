@@ -5,6 +5,7 @@ import models.Question;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Collections.EMPTY_LIST;
 
@@ -14,7 +15,7 @@ public class UnansweredQuestionsDAO {
         return EMPTY_LIST;
     }
 
-    public List<Question> getUnansweredQuestions(String questionId, Direction direction) {
+    public List<Question> getUnansweredQuestions(UUID questionId, Direction direction) {
         return EMPTY_LIST;
     }
 }

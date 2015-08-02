@@ -10,6 +10,7 @@ import views.html.index;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class ActiveQuestionsController extends GenericController {
@@ -30,12 +31,12 @@ public class ActiveQuestionsController extends GenericController {
         return list;
     }
 
-    public Result activeAfter(String questionId) {
+    public Result activeAfter(UUID questionId) {
         List<ActiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.AFTER.name());
         return activeInternal(questions);
     }
 
-    public Result activeBefore(String questionId) {
+    public Result activeBefore(UUID questionId) {
         List<ActiveQuestion> questions = activeQuestionsDAO.getActiveQuestions(questionId, Direction.BEFORE.name());
         return activeInternal(questions);
     }

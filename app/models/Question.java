@@ -1,43 +1,62 @@
 package models;
 
-import java.util.Date;
+import com.datastax.driver.core.utils.UUIDs;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+import com.datastax.driver.mapping.annotations.Transient;
 
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * Main question reference table, used to store base question data.
+ */
+@Table(name = "question")
 public class Question implements ListableQuestion {
 
-    private String id;
+    @PartitionKey
+    private UUID id;
 
-    private User author;
-
+    private String authorLogin;
     private String title;
     private String text;
-    private Date date;
+    private Date lastUpdated;
+
+    @Transient
+    private User author;
+
+    @Transient
     private int voteCount = 0;
+
+    @Transient
     private int answerCount = 0;
+
+    @Transient
     private int viewCount = 0;
+
+    @Transient
     private boolean answered;
+
+    @Transient
     private boolean follow;
 
     public Question() {
     }
 
-    public Question(String id, User author, String title, String text, Date date, int voteCount, int answerCount, int viewCount, boolean answered, boolean follow) {
+
+    public Question(UUID id, String authorLogin, String title, String text, Date lastUpdated) {
         this.id = id;
-        this.author = author;
+        this.authorLogin = authorLogin;
         this.title = title;
         this.text = text;
-        this.date = date;
-        this.voteCount = voteCount;
-        this.answerCount = answerCount;
-        this.viewCount = viewCount;
-        this.answered = answered;
-        this.follow = follow;
+        this.lastUpdated = lastUpdated;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -65,22 +84,36 @@ public class Question implements ListableQuestion {
         this.text = text;
     }
 
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public Date getDate() {
-        return date;
+        if(getId() != null) {
+            return new Date(UUIDs.unixTimestamp(id));
+        }
+        return null;
     }
 
     @Override
     public String getAuthorLogin() {
-        return getAuthor().getLogin();
+        if(author != null) {
+            return author.getLogin();
+        }
+        return authorLogin;
+    }
+
+    public void setAuthorLogin(String authorLogin) {
+        this.authorLogin = authorLogin;
     }
 
     @Override
     public String getAuthorDisplayName() {
         return getAuthor().getDisplayName();
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public int getVoteCount() {

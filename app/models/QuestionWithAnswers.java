@@ -3,7 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestionWithAnswers extends Question {
+public class QuestionWithAnswers {
     private Question question;
     private List<Comment> comments = new ArrayList<Comment>();
     private List<Answer> answers = new ArrayList<Answer>();

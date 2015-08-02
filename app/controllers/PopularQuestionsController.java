@@ -9,6 +9,7 @@ import play.mvc.Result;
 import views.html.index;
 
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class PopularQuestionsController extends GenericController {
@@ -21,12 +22,12 @@ public class PopularQuestionsController extends GenericController {
         return popularInternal(questions);
     }
 
-    public Result popularAfter(String questionId) {
+    public Result popularAfter(UUID questionId) {
         List<Question> questions = popularQuestionsDAO.getPopularQuestions(questionId, Direction.AFTER);
         return popularInternal(questions);
     }
 
-    public Result popularBefore(String questionId) {
+    public Result popularBefore(UUID questionId) {
         List<Question> questions = popularQuestionsDAO.getPopularQuestions(questionId, Direction.BEFORE);
         return popularInternal(questions);
     }

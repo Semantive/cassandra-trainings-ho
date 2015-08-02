@@ -1,45 +1,75 @@
 package models.spring;
 
+import com.datastax.driver.core.DataType;
+import com.datastax.driver.core.utils.UUIDs;
 import models.ListableQuestion;
+import models.User;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.cassandra.mapping.CassandraType;
+import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
 import java.util.Date;
+import java.util.UUID;
 
+/**
+ * Represents recently updated question:
+ * <ul>
+ *     <li>added</li>
+ *     <li>voted</li>
+ *     <li>answered</li>
+ *     <li>commented</li>
+ * </ul>
+ *
+ * This is a Spring Data Cassandra mapper implementation
+ */
 @Table("active_questions")
 public class ActiveQuestion implements ListableQuestion {
 
     @PrimaryKey
     private ActiveQuestionKey key;
 
+    @CassandraType(type = DataType.Name.TIMEUUID)
+    private UUID id;
+
+    @Column(value = "authorlogin")
     private String authorLogin;
-    private String authorFirstName;
-    private String authorLastName;
+
+    @Column(value = "title")
     private String title;
+
+    @Column(value = "text")
     private String text;
-    private Date date;
+
+    @Transient
+    private User author;
+
+    @Transient
     private int voteCount = 0;
+
+    @Transient
     private int answerCount = 0;
+
+    @Transient
     private int viewCount = 0;
+
+    @Transient
     private boolean answered;
+
+    @Transient
     private boolean follow;
+
 
     public ActiveQuestion() {
     }
 
-    public ActiveQuestion(ActiveQuestionKey key, String authorLogin, String authorFirstName, String authorLastName, String title, String text, Date date, int voteCount, int answerCount, int viewCount, boolean answered, boolean follow) {
+    public ActiveQuestion(ActiveQuestionKey key, UUID id, String authorLogin, String title, String text) {
         this.key = key;
+        this.id = id;
         this.authorLogin = authorLogin;
-        this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
         this.title = title;
         this.text = text;
-        this.date = date;
-        this.voteCount = voteCount;
-        this.answerCount = answerCount;
-        this.viewCount = viewCount;
-        this.answered = answered;
-        this.follow = follow;
     }
 
     public ActiveQuestionKey getKey() {
@@ -51,48 +81,27 @@ public class ActiveQuestion implements ListableQuestion {
     }
 
     @Override
-    public String getAuthorLogin() {
-        return authorLogin;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     @Override
-    public String getAuthorDisplayName() {
-        if (getAuthorFirstName() != null && getAuthorLastName() != null)
-            return getAuthorFirstName() + " " + getAuthorLastName();
-        if (getAuthorFirstName() != null)
-            return getAuthorFirstName();
-        if (getAuthorLastName() != null)
-            return getAuthorLastName();
-
-        return getAuthorLogin();
+    public String getAuthorLogin() {
+        if (author != null) {
+            return author.getLogin();
+        }
+        return authorLogin;
     }
 
     public void setAuthorLogin(String authorLogin) {
         this.authorLogin = authorLogin;
     }
 
-
-    public String getAuthorFirstName() {
-        return authorFirstName;
-    }
-
-    public void setAuthorFirstName(String authorFirstName) {
-        this.authorFirstName = authorFirstName;
-    }
-
-    public String getAuthorLastName() {
-        return authorLastName;
-    }
-
-    public void setAuthorLastName(String authorLastName) {
-        this.authorLastName = authorLastName;
-    }
-
     @Override
-    public String getId() {
-        return key.getLastUpdated().toString();
-    }
-
     public String getTitle() {
         return title;
     }
@@ -109,14 +118,28 @@ public class ActiveQuestion implements ListableQuestion {
         this.text = text;
     }
 
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @Override
+    public String getAuthorDisplayName() {
+        return getAuthor().getDisplayName();
+    }
+
+    @Override
     public Date getDate() {
-        return date;
+        if(getId() != null) {
+            return new Date(UUIDs.unixTimestamp(id));
+        }
+        return null;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
+    @Override
     public int getVoteCount() {
         return voteCount;
     }
@@ -125,6 +148,7 @@ public class ActiveQuestion implements ListableQuestion {
         this.voteCount = voteCount;
     }
 
+    @Override
     public int getAnswerCount() {
         return answerCount;
     }
@@ -133,6 +157,7 @@ public class ActiveQuestion implements ListableQuestion {
         this.answerCount = answerCount;
     }
 
+    @Override
     public int getViewCount() {
         return viewCount;
     }

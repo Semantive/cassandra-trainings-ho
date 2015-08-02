@@ -1,5 +1,8 @@
 package dao;
 
+import com.datastax.driver.core.utils.UUIDs;
+import com.datastax.driver.mapping.Mapper;
+import com.datastax.driver.mapping.MappingManager;
 import models.Answer;
 import models.Question;
 import models.QuestionWithAnswers;
@@ -7,22 +10,30 @@ import models.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 @Repository
 public class QuestionDAO {
-    public void createNewQuestion(Question question) {
-        // TODO generate identifier and create a question in a database
+
+    private Mapper<Question> getQuestionMapper() {
+        return new MappingManager(CassandraClient.getInstance().getSession()).mapper(Question.class);
     }
 
-    public void incrementViewsNumber(String questionId) {
+    public void createNewQuestion(Question question) {
+        question.setLastUpdated(new Date());
+        question.setId(UUIDs.startOf(question.getLastUpdated().getTime()));
+        getQuestionMapper().save(question);
+
+        // todo add publishing to ranks
+    }
+
+    public void incrementViewsNumber(UUID questionId) {
         // TODO increment the number of view of a given question
     }
 
 
-    public QuestionWithAnswers getQuestion(String questionId) {
-        // TODO: Get the question and answers from the database
-
+    private QuestionWithAnswers mockedQuestion() {
         // TODO Mock code - remove after real implementation
         User user1 = new User("jk");
         user1.setFirstName("Jan");
@@ -30,8 +41,11 @@ public class QuestionDAO {
 
         User user2 = new User("aragorn");
 
-        QuestionWithAnswers q = new QuestionWithAnswers();
-        q.setId("1");
+        QuestionWithAnswers qa = new QuestionWithAnswers();
+
+        Question q = new Question();
+        Date now = new Date();
+        q.setId(UUIDs.startOf(now.getTime()));
         q.setAuthor(user1);
         q.setTitle("Some question");
         q.setText("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore " +
@@ -40,7 +54,6 @@ public class QuestionDAO {
                 "cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " +
                 "culpa qui officia deserunt mollit anim id est laborum");
         q.setVoteCount(5);
-        q.setDate(new Date(System.currentTimeMillis() - 300000));
 
         Answer a = new Answer();
         a.setId("answer-1");
@@ -55,21 +68,44 @@ public class QuestionDAO {
                 "commodi consequatur?");
         a.setVoteCount(0);
         a.setDate(new Date(System.currentTimeMillis()));
-        q.getAnswers().add(a);
+        qa.getAnswers().add(a);
+        qa.setQuestion(q);
 
         // --------------------------------
-        return q;
+        return qa;
     }
 
-    public void incQuestionVotes(String questionId) {
+
+    public QuestionWithAnswers getQuestion(UUID questionId) {
+        // TODO: Get the question and answers from the database
+
+        Question question = getQuestionMapper().get(questionId);
+        if(question == null) {
+            // TODO: remove after implementation
+            return mockedQuestion();
+        }
+
+        User user1 = new User("jk");
+        user1.setFirstName("Jan");
+        user1.setLastName("Kowalski");
+        question.setAuthor(user1);
+
+        // todo add retrieving counters, answers, author etc.
+        QuestionWithAnswers qa = new QuestionWithAnswers();
+        qa.setQuestion(question);
+
+        return qa;
+    }
+
+    public void incQuestionVotes(UUID questionId) {
         // TODO: implement me
     }
 
-    public void decQuestionVotes(String questionId) {
+    public void decQuestionVotes(UUID questionId) {
         // TODO: implement me
     }
 
-    public void setFollowStatus(String userId, String questionId, boolean followState) {
+    public void setFollowStatus(String userId, UUID questionId, boolean followState) {
         // TODO: Update follow status in a database
 
     }

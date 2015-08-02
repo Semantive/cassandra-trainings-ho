@@ -4,28 +4,28 @@
 
 # Home page
 GET     /questions/recent                   @controllers.RecentQuestionsController.recent()
-GET     /questions/recent/after/:id         @controllers.RecentQuestionsController.recentAfter(id: String)
-GET     /questions/recent/before/:id        @controllers.RecentQuestionsController.recentBefore(id: String)
+GET     /questions/recent/after/:id         @controllers.RecentQuestionsController.recentAfter(id: java.util.UUID)
+GET     /questions/recent/before/:id        @controllers.RecentQuestionsController.recentBefore(id: java.util.UUID)
 
 GET     /questions/popular                  @controllers.PopularQuestionsController.popular()
-GET     /questions/popular/after/:id        @controllers.PopularQuestionsController.popularAfter(id: String)
-GET     /questions/popular/before/:id       @controllers.PopularQuestionsController.popularBefore(id: String)
+GET     /questions/popular/after/:id        @controllers.PopularQuestionsController.popularAfter(id: java.util.UUID)
+GET     /questions/popular/before/:id       @controllers.PopularQuestionsController.popularBefore(id: java.util.UUID)
 
 GET     /questions/active                   @controllers.ActiveQuestionsController.active()
-GET     /questions/active/after/:id         @controllers.ActiveQuestionsController.activeAfter(id: String)
-GET     /questions/active/before/:id        @controllers.ActiveQuestionsController.activeBefore(id: String)
+GET     /questions/active/after/:id         @controllers.ActiveQuestionsController.activeAfter(id: java.util.UUID)
+GET     /questions/active/before/:id        @controllers.ActiveQuestionsController.activeBefore(id: java.util.UUID)
 
 GET     /questions/unanswered               @controllers.UnansweredQuestionsController.unanswered()
-GET     /questions/unanswered/after/:id     @controllers.UnansweredQuestionsController.unansweredAfter(id: String)
-GET     /questions/unanswered/before/:id    @controllers.UnansweredQuestionsController.unansweredBefore(id: String)
+GET     /questions/unanswered/after/:id     @controllers.UnansweredQuestionsController.unansweredAfter(id: java.util.UUID)
+GET     /questions/unanswered/before/:id    @controllers.UnansweredQuestionsController.unansweredBefore(id: java.util.UUID)
 
 GET     /questions/my                       @controllers.AskedByMeQuestionsController.askedByMe()
-GET     /questions/my/after/:id             @controllers.AskedByMeQuestionsController.askedByMeAfter(id: String)
-GET     /questions/my/before/:id            @controllers.AskedByMeQuestionsController.askedByMeBefore(id: String)
+GET     /questions/my/after/:id             @controllers.AskedByMeQuestionsController.askedByMeAfter(id: java.util.UUID)
+GET     /questions/my/before/:id            @controllers.AskedByMeQuestionsController.askedByMeBefore(id: java.util.UUID)
 
 GET     /questions/followed                 @controllers.FollowedQuestionsController.followedByMe()
-GET     /questions/followed/after/:id       @controllers.FollowedQuestionsController.followedByMeAfter(id: String)
-GET     /questions/followed/before/:id      @controllers.FollowedQuestionsController.followedByMeBefore(id: String)
+GET     /questions/followed/after/:id       @controllers.FollowedQuestionsController.followedByMeAfter(id: java.util.UUID)
+GET     /questions/followed/before/:id      @controllers.FollowedQuestionsController.followedByMeBefore(id: java.util.UUID)
 
 GET     /questions/new                      @controllers.NewQuestionController.newQuestionForm()
 POST    /questions/new/save                 @controllers.NewQuestionController.saveQuestion()
@@ -43,13 +43,13 @@ GET     /profile/edit                       @controllers.UserProfileController.e
 POST    /profile/save                       @controllers.UserProfileController.saveProfile()
 
 # Question page
-GET     /question/:id                       @controllers.QuestionController.display(id: String)
-POST    /question/:id                       @controllers.QuestionController.postAnswer(id: String)
+GET     /question/:id                       @controllers.QuestionController.display(id: java.util.UUID)
+POST    /question/:id                       @controllers.QuestionController.postAnswer(id: java.util.UUID)
 
-GET     /question/:id/upvote                @controllers.QuestionController.upvoteQuestion(id: String)
-GET     /question/:id/downvote              @controllers.QuestionController.downvoteQuestion(id: String)
-GET     /question/:id/upvote/:aid           @controllers.QuestionController.upvoteAnswer(id: String, aid: String)
-GET     /question/:id/downvote/:aid         @controllers.QuestionController.downvoteAnswer(id: String, aid: String)
+GET     /question/:id/upvote                @controllers.QuestionController.upvoteQuestion(id: java.util.UUID)
+GET     /question/:id/downvote              @controllers.QuestionController.downvoteQuestion(id: java.util.UUID)
+GET     /question/:id/upvote/:aid           @controllers.QuestionController.upvoteAnswer(id: java.util.UUID, aid: String)
+GET     /question/:id/downvote/:aid         @controllers.QuestionController.downvoteAnswer(id: java.util.UUID, aid: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                       controllers.Assets.at(path="/public", file)

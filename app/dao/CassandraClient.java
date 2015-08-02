@@ -24,7 +24,7 @@ public class CassandraClient {
                 .build();
 
         createSchema();
-        session = cluster.connect("workshop");
+        session = cluster.connect("ho");
     }
 
     public Cluster getCluster() {
@@ -43,7 +43,15 @@ public class CassandraClient {
         Session s = cluster.connect();
 
         s.execute(
-                "CREATE TABLE IF NOT EXISTS workshop.user ( \n" +
+                "CREATE KEYSPACE IF NOT EXISTS ho\n" +
+                        "WITH REPLICATION = {\n" +
+                        "\t'class' : 'SimpleStrategy', 'replication_factor' : 1\n" +
+                        "}\n" +
+                        "AND DURABLE_WRITES = true;"
+        );
+
+        s.execute(
+                "CREATE TABLE IF NOT EXISTS ho.user ( \n" +
                         "\tlogin text,\n" +
                         "\tfirst_name text,\n" +
                         "\tlast_name text,\n" +
@@ -53,6 +61,15 @@ public class CassandraClient {
                         "\tPRIMARY KEY (login)\n" +
                         ");"
         );
+
+        s.execute("create table if not exists ho.question (\n" +
+                "\tid timeuuid,\n" +
+                "\tauthorlogin text,\n" +
+                "\ttitle text,\n" +
+                "\ttext text,\n" +
+                "\tlastupdated timestamp,\n" +
+                "\tprimary key (id)\n" +
+                ");");
 
         s.close();
     }

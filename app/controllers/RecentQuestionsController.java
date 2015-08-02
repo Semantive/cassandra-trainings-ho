@@ -9,6 +9,7 @@ import play.mvc.Result;
 import views.html.index;
 
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class RecentQuestionsController extends GenericController {
@@ -21,12 +22,12 @@ public class RecentQuestionsController extends GenericController {
         return recentInternal(questions);
     }
 
-    public Result recentAfter(String questionId) {
+    public Result recentAfter(UUID questionId) {
         List<Question> questions = recentQuestionsDAO.getRecentQuestions(questionId, Direction.AFTER);
         return recentInternal(questions);
     }
 
-    public Result recentBefore(String questionId) {
+    public Result recentBefore(UUID questionId) {
         List<Question> questions = recentQuestionsDAO.getRecentQuestions(questionId, Direction.AFTER);
         return recentInternal(questions);
     }

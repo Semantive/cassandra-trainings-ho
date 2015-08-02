@@ -3,17 +3,19 @@ package dao;
 import models.Answer;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class AnswerDAO {
-    public void incAnswerVotes(String questionId, String answerId) {
+    public void incAnswerVotes(UUID questionId, String answerId) {
         // TODO: implement me
     }
 
-    public void decAnswerVotes(String questionId, String answerId) {
+    public void decAnswerVotes(UUID questionId, String answerId) {
         // TODO: implement me
     }
 
-    public void saveAnswer(String questionId, Answer answer) {
+    public void saveAnswer(UUID questionId, Answer answer) {
         // TODO: Add answer to the database
 
         // --------------------------------

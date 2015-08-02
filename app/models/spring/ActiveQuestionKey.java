@@ -1,12 +1,15 @@
 package models.spring;
 
+import com.datastax.driver.core.DataType;
 import org.springframework.cassandra.core.Ordering;
 import org.springframework.cassandra.core.PrimaryKeyType;
+import org.springframework.data.cassandra.mapping.CassandraType;
 import org.springframework.data.cassandra.mapping.PrimaryKeyClass;
 import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author Piotr Jędruszuk
@@ -14,30 +17,52 @@ import java.util.Date;
 @PrimaryKeyClass
 public class ActiveQuestionKey implements Serializable {
 
-    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private String questionId;
+    /**
+     * Year of last update timestamp
+     */
+    @PrimaryKeyColumn(name = "year", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+    private Integer year;
 
-    @PrimaryKeyColumn(name = "lastUpdated", ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
-    private Date lastUpdated;
+    /**
+     * Month of last update timestamp
+     */
+    @PrimaryKeyColumn(name = "month", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
+    private Integer month;
 
-    public ActiveQuestionKey(String questionId, Date lastUpdated) {
-        this.questionId = questionId;
+    /**
+     * Last update timestamp
+     */
+    @PrimaryKeyColumn(name = "lastupdated", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
+    @CassandraType(type = DataType.Name.TIMEUUID)
+    private UUID lastUpdated;
+
+    public ActiveQuestionKey(Integer year, Integer month, UUID lastUpdated) {
+        this.year = year;
+        this.month = month;
         this.lastUpdated = lastUpdated;
     }
 
-    public String getQuestionId() {
-        return questionId;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
-    public Date getLastUpdated() {
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public UUID getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(UUID lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 }

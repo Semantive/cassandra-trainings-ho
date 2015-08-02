@@ -1,13 +1,14 @@
 package models;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author Piotr Jędruszuk
  */
 public interface ListableQuestion {
 
-    String getId();
+    UUID getId();
 
     String getTitle();
 

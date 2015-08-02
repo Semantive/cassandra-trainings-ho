@@ -26,7 +26,6 @@ public class NewQuestionController extends GenericController {
     public Result saveQuestion() {
         Form<Question> form = new Form<>(Question.class).bindFromRequest(request());
         Question question = form.get();
-        question.setDate(new Date());;
         question.setAuthor(getCurrentUser());
 
         questionDAO.createNewQuestion(question);

@@ -9,6 +9,7 @@ import play.mvc.Result;
 import views.html.index;
 
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Controller
 public class AskedByMeQuestionsController extends GenericController {
@@ -22,13 +23,13 @@ public class AskedByMeQuestionsController extends GenericController {
         return askedbyInternal(questions);
     }
 
-    public Result askedByMeAfter(String questionId) {
+    public Result askedByMeAfter(UUID questionId) {
         String userId = getCurrentUserId();
         List<Question> questions = askedByQuestionsDAO.getAskedByQuestions(userId, questionId, Direction.AFTER);
         return askedbyInternal(questions);
     }
 
-    public Result askedByMeBefore(String questionId) {
+    public Result askedByMeBefore(UUID questionId) {
         String userId = getCurrentUserId();
         List<Question> questions = askedByQuestionsDAO.getAskedByQuestions(userId, questionId, Direction.BEFORE);
         return askedbyInternal(questions);

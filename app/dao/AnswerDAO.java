@@ -15,7 +15,7 @@ public class AnswerDAO {
         // TODO: implement me
     }
 
-    public void saveAnswer(UUID questionId, Answer answer) {
+    public void saveAnswer(UUID questionId, String text, String authorLogin) {
         // TODO: Add answer to the database
 
         // --------------------------------

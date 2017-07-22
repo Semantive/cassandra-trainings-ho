@@ -2,21 +2,27 @@ package dao;
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.DriverException;
-import models.Credentials;
-import models.NewUser;
+import dao.cassandra.CassandraSupport;
 import models.User;
-import org.springframework.stereotype.Repository;
 import play.Logger;
 
+import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-@Repository
 public class UserDAO {
 
-    private static String md5(String text) {
+    private final CassandraSupport cassandraSupport;
+
+    @Inject
+    public UserDAO(CassandraSupport cSupport) {
+        this.cassandraSupport = cSupport;
+    }
+
+
+    private String md5(String text) {
         if(text == null || text.isEmpty())
             return text;
 
@@ -33,10 +39,10 @@ public class UserDAO {
     }
 
     public boolean updateUser(User user) {
-        Session session = CassandraClient.getInstance().getSession();
+        Session session = cassandraSupport.getSession();
 
         PreparedStatement statement = session.prepare(
-            "update user set first_name = ?, last_name = ?, email = ?, password = ?, reputation = ? where login = ?;"
+            "update user set firstname = ?, lastname = ?, email = ?, password = ?, reputation = ? where login = ?;"
         );
 
         BoundStatement boundStatement = new BoundStatement(statement);
@@ -51,11 +57,11 @@ public class UserDAO {
         return false;
     }
 
-    public boolean createUser(NewUser user) {
-        Session session = CassandraClient.getInstance().getSession();
+    public boolean createUser(User user) {
+        Session session = cassandraSupport.getSession();
 
         PreparedStatement statement = session.prepare(
-            "insert into user (login, first_name, last_name, email, password, reputation) " +
+            "insert into user (login, firstname, lastname, email, password, reputation) " +
                     "values(?, ?, ?, ?, ?, ?) IF NOT EXISTS;"
         );
 
@@ -64,22 +70,23 @@ public class UserDAO {
         return rs.one().getBool(0);
     }
 
-    public boolean authenticate(Credentials credentials) {
-        Session session = CassandraClient.getInstance().getSession();
+    public boolean authenticate(String login, String password) {
+        Session session = cassandraSupport.getSession();
         PreparedStatement statement = session.prepare(
                 "select password from user where login = ?;"
         );
 
-        ResultSet rs = session.execute(new BoundStatement(statement).bind(credentials.getLogin()));
-        return md5(credentials.getPassword()).equals(rs.one().getString(0));
+        ResultSet rs = session.execute(new BoundStatement(statement).bind(login));
+        Row row = rs.one();
+        return row != null && md5(password).equals(row.getString(0));
     }
 
 
     public User getUser(String login) {
-        Session session = CassandraClient.getInstance().getSession();
+        Session session = cassandraSupport.getSession();
 
         PreparedStatement statement = session.prepare(
-                "select login, first_name, last_name, email, password, reputation from user where login = ?; "
+                "select login, firstname, lastname, email, password, reputation from user where login = ?; "
         );
 
         BoundStatement boundStatement = new BoundStatement(statement);
@@ -88,8 +95,8 @@ public class UserDAO {
         if(row != null) {
             return new User(
                     row.getString("login"),
-                    row.getString("first_name"),
-                    row.getString("last_name"),
+                    row.getString("firstname"),
+                    row.getString("lastname"),
                     row.getString("email"),
                     row.getString("password"),
                     row.getInt("reputation")

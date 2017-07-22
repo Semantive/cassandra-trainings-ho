@@ -1,21 +1,26 @@
 package controllers;
 
 import dao.UnansweredQuestionsDAO;
+import dao.UserDAO;
 import models.Direction;
 import models.Question;
 import models.QuestionList;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Result;
 import views.html.index;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class UnansweredQuestionsController extends GenericController {
 
-    @Autowired
-    private UnansweredQuestionsDAO unansweredQuestionsDAO;
+    private final UnansweredQuestionsDAO unansweredQuestionsDAO;
+
+    @Inject
+    public UnansweredQuestionsController(UserDAO userDAO, UnansweredQuestionsDAO unansweredQuestionsDAO) {
+        super(userDAO);
+        this.unansweredQuestionsDAO = unansweredQuestionsDAO;
+    }
 
     public Result unanswered() {
         List<Question> questions = unansweredQuestionsDAO.getUnansweredQuestions();

@@ -1,22 +1,27 @@
 package controllers;
 
-import dao.spring.ActiveQuestionsDAO;
-import models.spring.ActiveQuestion;
+import dao.ActiveQuestionsDAO;
+import dao.UserDAO;
+import models.ActiveQuestion;
 import models.Direction;
 import models.QuestionList;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Result;
 import views.html.index;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class ActiveQuestionsController extends GenericController {
 
-    @Autowired
-    private ActiveQuestionsDAO activeQuestionsDAO;
+    private final ActiveQuestionsDAO activeQuestionsDAO;
+
+    @Inject
+    public ActiveQuestionsController(UserDAO userDAO, ActiveQuestionsDAO activeQuestionsDAO) {
+        super(userDAO);
+        this.activeQuestionsDAO = activeQuestionsDAO;
+    }
 
     public Result active() {
         List<ActiveQuestion> questions = getList(activeQuestionsDAO.findAll());
@@ -25,7 +30,7 @@ public class ActiveQuestionsController extends GenericController {
 
     private List<ActiveQuestion> getList(Iterable<ActiveQuestion> iterable) {
         List<ActiveQuestion> list = new ArrayList<>();
-        for (ActiveQuestion el: iterable) {
+        for (ActiveQuestion el : iterable) {
             list.add(el);
         }
         return list;

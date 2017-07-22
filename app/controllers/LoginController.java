@@ -1,71 +1,87 @@
 package controllers;
 
 import dao.UserDAO;
-import models.Credentials;
-import models.NewUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Result;
 import views.html.login;
 import views.html.register;
 
-@org.springframework.stereotype.Controller
+import javax.inject.Inject;
+
 public class LoginController extends GenericController {
+    private Logger.ALogger logger = play.Logger.of(getClass());
 
-    @Autowired
-    private UserDAO userDAO;
+    private final RecentQuestionsController recentQuestionsController;
 
-    @Autowired
-    private RecentQuestionsController recentQuestionsController;
+    private final FormFactory formFactory;
+    private final Form<LoginData> formUserLoginData;
+    private final Form<LoginRegisterData> formUserRegisterData;
+
+    @Inject
+    public LoginController(FormFactory formFactory,
+                           UserDAO userDAO,
+                           RecentQuestionsController recentQuestionsController) {
+        super(userDAO);
+        this.formFactory = formFactory;
+        this.formUserLoginData = formFactory.form(LoginData.class);
+        this.formUserRegisterData = formFactory.form(LoginRegisterData.class);
+        this.recentQuestionsController = recentQuestionsController;
+    }
 
     public Result displayLoginPage() {
-        session().put(REFERER, request().getHeader(REFERER));
-        return ok(login.render(Form.form(Credentials.class), getAuthentication()));
+        request().header(REFERER).ifPresent(s -> session().put(REFERER, s));
+        return ok(login.render(formUserLoginData, getAuthentication()));
     }
 
     public Result displayRegistrationPage() {
-        session().put(REFERER, request().getHeader(REFERER));
-        return ok(register.render(Form.form(NewUser.class), getAuthentication()));
+        request().header(REFERER).ifPresent(s -> session().put(REFERER, s));
+
+        return ok(register.render(formUserRegisterData, getAuthentication()));
     }
 
     public Result login() {
-        DynamicForm df = DynamicForm.form().bindFromRequest(request());
+        DynamicForm df = formFactory.form().bindFromRequest();
+
         if (df.get("_cancel") != null)
             return redirectBackToReferer();
 
-        Form<Credentials> form = Form.form(Credentials.class).bind(df.data());
+        Form<LoginData> form = formUserLoginData.bind(df.rawData());
         if (form.hasErrors()) {
-            form.reject("You must provide both login and password.");
+            logger.debug("errors = {}", form.allErrors());
+            form = form.withGlobalError("You must provide both login and password.");
             return badRequest(login.render(form, getAuthentication()));
         }
 
-        Credentials credentials = form.get();
-        if (!userDAO.authenticate(credentials)) {
-            form.reject("Invalid login or password.");
+        LoginData loginData = form.get();
+        logger.debug("login {}, password {}", loginData.getLogin(), loginData.getPassword());
+        if (!userDAO.authenticate(loginData.getLogin(), loginData.getPassword())) {
+            form = form.withGlobalError("Invalid login or password.");
             return badRequest(login.render(form, getAuthentication()));
         }
 
-        session().put("currentUser", credentials.getLogin());
+        session().put("currentUser", loginData.getLogin());
         return recentQuestionsController.recent();
     }
 
     public Result register() {
-        DynamicForm df = DynamicForm.form().bindFromRequest(request());
+        DynamicForm df = formFactory.form().bindFromRequest();
         if (df.get("_cancel") != null)
             return redirectBackToReferer();
 
-        Form<NewUser> form = Form.form(NewUser.class).bind(df.data());
+        Form<LoginRegisterData> form = formUserRegisterData.bindFromRequest();
         if (form.hasErrors())
             return badRequest(register.render(form, getAuthentication()));
 
-        NewUser user = form.get();
-        if (!userDAO.createUser(user)) {
-            form.reject("login", "User already exists.");
+        LoginRegisterData userData = form.get();
+        if (!userDAO.createUser(userData.toUser())) {
+            form = form.withError("login", "User already exists.");
             return badRequest(register.render(form, getAuthentication()));
         }
 
-        session().put("currentUser", user.getLogin());
+        session().put("currentUser", userData.getLogin());
         return login();
     }
 
@@ -74,12 +90,10 @@ public class LoginController extends GenericController {
         return recentQuestionsController.recent();
     }
 
-    public Result redirectBackToReferer() {
+    private Result redirectBackToReferer() {
         String referer = session().get(REFERER);
         if (referer == null)
-            referer = request().getHeader(REFERER);
-        if (referer == null)
-            referer = "/";
+            referer = request().header(REFERER).orElse("/");
         session().remove(REFERER);
         return redirect(referer);
     }

@@ -2,9 +2,6 @@ package controllers;
 
 import models.User;
 
-/**
- * @author Piotr Jędruszuk (pjedruszuk@semantive.com)
- */
 public class Authentication {
     private Boolean authenticated;
     private User currentUser;

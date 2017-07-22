@@ -1,21 +1,26 @@
 package controllers;
 
 import dao.FollowedByQuestionsDAO;
+import dao.UserDAO;
 import models.Direction;
 import models.Question;
 import models.QuestionList;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Result;
 import views.html.index;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class FollowedQuestionsController extends GenericController {
 
-    @Autowired
-    private FollowedByQuestionsDAO followedByQuestionsDAO;
+    private final FollowedByQuestionsDAO followedByQuestionsDAO;
+
+    @Inject
+    public FollowedQuestionsController(UserDAO userDAO, FollowedByQuestionsDAO followedByQuestionsDAO) {
+        super(userDAO);
+        this.followedByQuestionsDAO = followedByQuestionsDAO;
+    }
 
     public Result followedByMe() {
         String userId = getCurrentUserId();

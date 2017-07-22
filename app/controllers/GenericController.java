@@ -2,38 +2,36 @@ package controllers;
 
 import dao.UserDAO;
 import models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Controller;
 
-/**
- * @author Piotr Jędruszuk (pjedruszuk@semantive.com)
- */
+import javax.inject.Inject;
+
 public abstract class GenericController extends Controller {
 
-    @Autowired
-    private UserDAO userDAO;
+    protected final UserDAO userDAO;
 
-    protected boolean isAuthenticated() {
+    @Inject
+    public GenericController(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public boolean isAuthenticated() {
         return session("currentUser") != null;
     }
 
-    protected String getCurrentUserId() {
+    public String getCurrentUserId() {
         return session("currentUser");
     }
 
-    protected User getCurrentUser() {
+    public User getCurrentUser() {
         String login = session("currentUser");
         if (login == null)
             return null;
         return userDAO.getUser(login);
     }
 
-    protected Authentication getAuthentication() {
+    public Authentication getAuthentication() {
         return new Authentication(isAuthenticated(), getCurrentUser());
     }
-
-
-
-
 
 }

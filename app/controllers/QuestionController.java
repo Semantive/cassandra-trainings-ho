@@ -2,43 +2,52 @@ package controllers;
 
 import dao.AnswerDAO;
 import dao.QuestionDAO;
+import dao.UserDAO;
 import models.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Result;
+import views.html.newquestion;
 import views.html.question;
 
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class QuestionController extends GenericController {
 
-    @Autowired
-    private QuestionDAO questionDAO;
+    private final Form<QuestionNewAnswerData> formAnswer;
 
-    @Autowired
-    private AnswerDAO answerDAO;
+    private final QuestionDAO questionDAO;
+    private final AnswerDAO answerDAO;
 
-    public Result display(UUID id) {
-        Form<Answer> form = new Form<Answer>(Answer.class);
-        questionDAO.incrementViewsNumber(id);
-        return ok(question.render(questionDAO.getQuestion(id), form, getAuthentication()));
+    @Inject
+    public QuestionController(FormFactory formFactory, UserDAO userDAO,
+                              QuestionDAO questionDAO, AnswerDAO answerDAO) {
+        super(userDAO);
+        this.formAnswer = formFactory.form(QuestionNewAnswerData.class);
+        this.questionDAO = questionDAO;
+        this.answerDAO = answerDAO;
     }
 
-    public Result postAnswer(UUID id) {
+    public Result display(UUID id) {
+        questionDAO.incrementViewsNumber(id);
+        return ok(question.render(questionDAO.getQuestion(id), formAnswer, getAuthentication()));
+    }
+
+    public Result postAnswer(UUID questionId) {
         if (!isAuthenticated())
             return badRequest("You must be authenticated to post answers");
 
-        Form<Answer> answerForm = Form.form(Answer.class).bindFromRequest(request());
-        if (!answerForm.hasErrors()) {
-            Answer answer = answerForm.get();
-            answer.setAuthor(getCurrentUser());
-            answer.setDate(new Date());
-            answer.setVoteCount(0);
-            answerDAO.saveAnswer(id, answer);
+        final Form<QuestionNewAnswerData> form = formAnswer.bindFromRequest();
+        if (form.hasErrors()) {
+            return badRequest(question.render(questionDAO.getQuestion(questionId), form, getAuthentication()));
         }
-        return redirect(controllers.routes.QuestionController.display(id));
+
+        QuestionNewAnswerData answerData = form.get();
+        answerDAO.saveAnswer(questionId, answerData.getText(), getCurrentUser().getLogin());
+
+        return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
     public Result upvoteQuestion(UUID questionId) {
@@ -61,13 +70,8 @@ public class QuestionController extends GenericController {
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 
-    public Result followQuestion(UUID questionId) {
-        questionDAO.setFollowStatus(getCurrentUserId(), questionId, true);
-        return redirect(controllers.routes.QuestionController.display(questionId));
-    }
-
-    public Result unfollowQuestion(UUID questionId) {
-        questionDAO.setFollowStatus(getCurrentUserId(), questionId, false);
+    public Result toggleFollowQuestion(UUID questionId) {
+        questionDAO.toggleFollowStatus(getCurrentUserId(), questionId);
         return redirect(controllers.routes.QuestionController.display(questionId));
     }
 

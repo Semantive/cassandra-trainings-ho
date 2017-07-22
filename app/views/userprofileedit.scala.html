@@ -1,58 +1,62 @@
-@(form: Form[User], auth: Authentication)
-@import scala.collection.JavaConversions._
+@(form: Form[UserProfileData], auth: Authentication)
 
 @main("Profile", auth) {
 
     @helper.form(routes.UserProfileController.saveProfile(), 'class -> "form-horizontal", 'role -> "form") {
         <div class="page-header">
-            <h1>@form("login").value profile</h1>
+            <h1>@form("login").getValue().orElse("") profile</h1>
         </div>
 
         @if(form.hasGlobalErrors) {
             <div class="alert alert-danger col-lg-8 col-lg-offset-2">
             @for(error <- form.globalErrors) {
-                @error.message <br/>
+                <p>@error.format(messages())</p>
             }
             </div>
         }
 
+        @*
         @if(!(javaCollectionToScala(form.errors.values).map(javaCollectionToScala(_)).flatten.map(_.message).toSet.diff(javaCollectionToScala(form.globalErrors).map(_.message).toSet)).isEmpty) {
             <div class="alert alert-warning col-lg-8 col-lg-offset-2">
                 Some fields are missing of invalid. Please fill out the form correctly.
             </div>
         }
+        *@
 
         <div class="form-group">
             <label class="col-lg-4 control-label" for="loginField">Login</label>
             <div class="col-lg-4">
-                <input class="form-control" id="loginField" type="text" name="login" value="@form("login").value" readonly="true"/>
+                <input class="form-control" id="loginField" type="text" name="login" value="@form("login").getValue().orElse("")" readonly="true"/>
             </div>
         </div>
-        <div class="form-group @if(form("firstName").errors.nonEmpty) {has-error} else {}">
+        <div class="form-group @if(!form("firstName").errors.isEmpty) {has-error} else {}">
             <label class="col-lg-4 control-label" for="firstNameField">First name</label>
             <div class="col-lg-4">
-                <input class="form-control" id="firstNameField" type="text" name="firstName" placeholder="enter your first name..." value="@form("firstName").value"/>
+
+                <input class="form-control" id="firstNameField" type="text" name="firstName" placeholder="enter your first name..." value="@form("firstName").getValue().orElse("")"/>
+
+
             </div>
             @for(error <- form("firstName").errors) {
-                <span class="help-block">@error.message</span>
+                <span class="help-block">@error.format(messages())</span>
             }
         </div>
-        <div class="form-group @if(form("lastName").errors.nonEmpty) {has-error} else {}">
+        <div class="form-group @if(!form("lastName").errors.isEmpty) {has-error} else {}">
             <label class="col-lg-4 control-label" for="lastNameField">Last name</label>
             <div class="col-lg-4">
-                <input class="form-control" id="lastNameField" type="text" name="lastName" placeholder="enter your last name..." value="@form("lastName").value"/>
+                <input class="form-control" id="lastNameField" type="text" name="lastName" placeholder="enter your last name..." value="@form("lastName").getValue().orElse("")"/>
             </div>
             @for(error <- form("lastName").errors) {
-                <span class="help-block">@error.message</span>
+                <span class="help-block">@error.format(messages())</span>
             }
         </div>
-        <div class="form-group @if(form("email").errors.nonEmpty) {has-error} else {}">
+        <div class="form-group @if(!form("email").errors.isEmpty) {has-error} else {}">
             <label class="col-lg-4 control-label" for="emailField">Email</label>
             <div class="col-lg-4">
-                <input class="form-control" id="emailField" type="email" name="email" placeholder="enter your email..." value="@form("email").value" required="true"/>
+                <input class="form-control" id="emailField" type="email" name="email" placeholder="enter your email..." value="@form("email").getValue().orElse("")" required="true"/>
             </div>
             @for(error <- form("email").errors) {
-                <span class="help-block">@error.message</span>
+                <span class="help-block">@error.format(messages())</span>
             }
         </div>
 

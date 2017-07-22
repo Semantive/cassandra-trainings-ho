@@ -1,8 +1,6 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Answer {
 
@@ -11,7 +9,6 @@ public class Answer {
     private String text;
     private Date date;
     private int voteCount;
-    private List<Comment> comments = new ArrayList<Comment>();
 
     public String getId() {
         return id;
@@ -53,11 +50,4 @@ public class Answer {
         this.voteCount = voteCount;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 }

@@ -1,7 +1,5 @@
 package models;
 
-import models.spring.ActiveQuestion;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,30 +1,30 @@
-@(question: QuestionWithAnswers, form: Form[Answer], auth: Authentication)
+@(question: Question, form: Form[QuestionNewAnswerData], auth: Authentication)
 
-    @main(question.getQuestion.getTitle, auth) {
+    @main(question.getTitle, auth) {
         <div class="row">
             <div class="col-lg-1">
                 <div class="btn-group-vertical">
                     @if(auth.isAuthenticated) {
-                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteQuestion(question.getQuestion.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteQuestion(question.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
                     }
-                    <button class="btn btn-default btn-lg"><strong class="text-success">@question.getQuestion.getVoteCount</strong></button>
+                    <button class="btn btn-default btn-lg"><strong class="text-success">@question.getVoteCount</strong></button>
                     @if(auth.isAuthenticated) {
-                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteQuestion(question.getQuestion.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
-                        <a class="btn btn-default btn-lg"><span class="glyphicon @if(question.getQuestion.isFollow) {glyph-icon-star} else {glyphicon-star-empty}"></span></a>
+                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteQuestion(question.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                        <a class="btn btn-default btn-lg" href="@routes.QuestionController.toggleFollowQuestion(question.getId)"><span class="glyphicon @if(question.isFollow) {glyph-icon-star} else {glyphicon-star-empty}"></span></a>
                     }
                 </div>
             </div>
             <div class="col-lg-11">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                    @question.getQuestion.getTitle
+                    @question.getTitle
                     </div>
                     <div class="panel-body">
-                        <p class="text">@question.getQuestion.getText</p>
+                        <p class="text">@question.getText</p>
                     </div>
                     <div class="panel-footer">
                         <small class="pull-right">
-                            Asked by @question.getQuestion.getAuthor.getDisplayName() @util.DateFormatter.format(question.getQuestion.getDate)</small>&nbsp;
+                            Asked by @question.getAuthor.getDisplayName() @util.DateFormatter.format(question.getDate)</small>&nbsp;
                     </div>
                 </div>
             </div>
@@ -39,11 +39,11 @@
                 <div class="col-lg-1">
                     <div class="btn-group-vertical">
                         @if(auth.isAuthenticated) {
-                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteAnswer(question.getQuestion.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.upvoteAnswer(question.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-up"></span></a>
                         }
                     <button type="button" class="btn btn-default btn-lg"><strong class="text-success">@answer.getVoteCount</strong></button>
                         @if(auth.isAuthenticated) {
-                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteAnswer(question.getQuestion.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                            <a class="btn btn-default btn-lg" href="@routes.QuestionController.downvoteAnswer(question.getId, answer.getId)"><span class="glyphicon glyphicon-chevron-down"></span></a>
                         }
                     </div>
                 </div>
@@ -66,9 +66,12 @@
                 <div class="page-header">
                     <h3>Post Answer</h3>
                 </div>
-                @helper.form(action = routes.QuestionController.postAnswer(question.getQuestion.getId), 'role -> "form") {
-                    <div class="form-group">
+                @helper.form(action = routes.QuestionController.postAnswer(question.getId), 'role -> "form") {
+                    <div class="form-group @if(!form("text").errors.isEmpty) {has-error} else {}">
                         <textarea class="form-control" id="answerArea" name="text">@form("text").value</textarea>
+                        @for(error <- form("text").errors) {
+                            <span class="help-block">@error.format(messages())</span>
+                        }
                     </div>
 
                     <button type="submit" value="Submit" class="btn btn-primary btn-lg">Submit</button>

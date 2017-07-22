@@ -5,7 +5,9 @@ import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 import com.datastax.driver.mapping.annotations.Transient;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,7 +15,6 @@ import java.util.UUID;
  */
 @Table(name = "question")
 public class Question implements ListableQuestion {
-
     @PartitionKey
     private UUID id;
 
@@ -23,34 +24,25 @@ public class Question implements ListableQuestion {
     private Date lastUpdated;
 
     @Transient
+    private List<Answer> answers = new ArrayList<Answer>();
+
+    @Transient
     private User author;
 
     @Transient
-    private int voteCount = 0;
+    private int voteCount;
 
     @Transient
-    private int answerCount = 0;
+    private int answerCount;
 
     @Transient
-    private int viewCount = 0;
+    private int viewCount;
 
     @Transient
     private boolean answered;
 
     @Transient
     private boolean follow;
-
-    public Question() {
-    }
-
-
-    public Question(UUID id, String authorLogin, String title, String text, Date lastUpdated) {
-        this.id = id;
-        this.authorLogin = authorLogin;
-        this.title = title;
-        this.text = text;
-        this.lastUpdated = lastUpdated;
-    }
 
     public UUID getId() {
         return id;
@@ -60,12 +52,16 @@ public class Question implements ListableQuestion {
         this.id = id;
     }
 
-    public User getAuthor() {
-        return author;
+    @Override
+    public String getAuthorLogin() {
+        if(author != null) {
+            return author.getLogin();
+        }
+        return authorLogin;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthorLogin(String authorLogin) {
+        this.authorLogin = authorLogin;
     }
 
     public String getTitle() {
@@ -92,6 +88,23 @@ public class Question implements ListableQuestion {
         this.lastUpdated = lastUpdated;
     }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @Transient
     public Date getDate() {
         if(getId() != null) {
             return new Date(UUIDs.unixTimestamp(id));
@@ -99,21 +112,13 @@ public class Question implements ListableQuestion {
         return null;
     }
 
-    @Override
-    public String getAuthorLogin() {
-        if(author != null) {
-            return author.getLogin();
-        }
-        return authorLogin;
-    }
-
-    public void setAuthorLogin(String authorLogin) {
-        this.authorLogin = authorLogin;
-    }
-
+    @Transient
     @Override
     public String getAuthorDisplayName() {
-        return getAuthor().getDisplayName();
+        if(author != null) {
+            return author.getDisplayName();
+        }
+        return authorLogin;
     }
 
     public int getVoteCount() {

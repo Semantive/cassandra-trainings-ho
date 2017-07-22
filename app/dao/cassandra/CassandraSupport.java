@@ -1,23 +1,19 @@
-package dao;
+package dao.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.policies.ConstantReconnectionPolicy;
+import play.api.Play;
 
-/**
- * Created by Maciej Migacz on 2014-05-05
- * email: maciejmigacz@gmail.com
- */
-public class CassandraClient {
-    private static CassandraClient ourInstance = new CassandraClient();
-    private Cluster cluster;
-    private Session session;
+import javax.inject.Singleton;
+import java.nio.file.Paths;
 
-    public static CassandraClient getInstance() {
-        return ourInstance;
-    }
+@Singleton
+public class CassandraSupport {
+    private final Cluster cluster;
+    private final Session session;
 
-    private CassandraClient() {
+    public CassandraSupport() {
         cluster = Cluster.builder()
                 .addContactPoint("127.0.0.1")
                 .withReconnectionPolicy(new ConstantReconnectionPolicy(200))
@@ -53,8 +49,8 @@ public class CassandraClient {
         s.execute(
                 "CREATE TABLE IF NOT EXISTS ho.user ( \n" +
                         "\tlogin text,\n" +
-                        "\tfirst_name text,\n" +
-                        "\tlast_name text,\n" +
+                        "\tfirstname text,\n" +
+                        "\tlastname text,\n" +
                         "\temail text,\n" +
                         "\tpassword text,\n" +
                         "\treputation int,\n" +
@@ -62,15 +58,16 @@ public class CassandraClient {
                         ");"
         );
 
-        s.execute("create table if not exists ho.question (\n" +
-                "\tid timeuuid,\n" +
-                "\tauthorlogin text,\n" +
-                "\ttitle text,\n" +
-                "\ttext text,\n" +
-                "\tlastupdated timestamp,\n" +
-                "\tprimary key (id)\n" +
-                ");");
-
+        s.execute(
+                "create table if not exists ho.question (\n" +
+                        "\tid timeuuid,\n" +
+                        "\tauthorlogin text,\n" +
+                        "\ttitle text,\n" +
+                        "\ttext text,\n" +
+                        "\tlastupdated timestamp,\n" +
+                        "\tprimary key (id)\n" +
+                        ");"
+        );
         s.close();
     }
 }

@@ -1,86 +1,64 @@
-package models.spring;
+package models;
 
-import com.datastax.driver.core.DataType;
 import com.datastax.driver.core.utils.UUIDs;
-import models.ListableQuestion;
-import models.User;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.cassandra.mapping.CassandraType;
-import org.springframework.data.cassandra.mapping.Column;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
 
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Represents recently updated question:
- * <ul>
- *     <li>added</li>
- *     <li>voted</li>
- *     <li>answered</li>
- *     <li>commented</li>
- * </ul>
- *
- * This is a Spring Data Cassandra mapper implementation
- */
-@Table("active_questions")
 public class ActiveQuestion implements ListableQuestion {
 
-    @PrimaryKey
-    private ActiveQuestionKey key;
+    private Integer year;
+    private Integer month;
+    private UUID lastUpdated;
 
-    @CassandraType(type = DataType.Name.TIMEUUID)
     private UUID id;
-
-    @Column(value = "authorlogin")
     private String authorLogin;
-
-    @Column(value = "title")
     private String title;
-
-    @Column(value = "text")
     private String text;
-
-    @Transient
     private User author;
-
-    @Transient
     private int voteCount = 0;
-
-    @Transient
     private int answerCount = 0;
-
-    @Transient
     private int viewCount = 0;
-
-    @Transient
     private boolean answered;
-
-    @Transient
     private boolean follow;
-
 
     public ActiveQuestion() {
     }
 
-    public ActiveQuestion(ActiveQuestionKey key, UUID id, String authorLogin, String title, String text) {
-        this.key = key;
+    public ActiveQuestion(Integer yer, Integer month, UUID lastUpdated, UUID id, String authorLogin, String title, String text) {
+        this.year = year;
+        this.month = month;
+        this.lastUpdated = lastUpdated;
         this.id = id;
         this.authorLogin = authorLogin;
         this.title = title;
         this.text = text;
     }
 
-    public ActiveQuestionKey getKey() {
-        return key;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setKey(ActiveQuestionKey key) {
-        this.key = key;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
-    @Override
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public UUID getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(UUID lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -89,7 +67,6 @@ public class ActiveQuestion implements ListableQuestion {
         this.id = id;
     }
 
-    @Override
     public String getAuthorLogin() {
         if (author != null) {
             return author.getLogin();
@@ -133,7 +110,7 @@ public class ActiveQuestion implements ListableQuestion {
 
     @Override
     public Date getDate() {
-        if(getId() != null) {
+        if (getId() != null) {
             return new Date(UUIDs.unixTimestamp(id));
         }
         return null;

@@ -1,8 +1,8 @@
-package models;
+package controllers;
 
 import play.data.validation.Constraints;
 
-public class Credentials {
+public class LoginData {
     @Constraints.Required
     private String login;
 
@@ -24,4 +24,5 @@ public class Credentials {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

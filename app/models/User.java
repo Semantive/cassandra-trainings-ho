@@ -1,24 +1,11 @@
 package models;
 
-import play.data.validation.Constraints;
-
 public class User {
-    @Constraints.Required(message = "Login is required")
-    @Constraints.Pattern(value = "[a-zA-Z0-9_]*", message="Login should include only alphanumeric characters and underscores")
-    @Constraints.MinLength(value= 3, message = "Minimum length is 3")
     private String login;
-
-    @Constraints.Pattern(value = "[a-zA-Z ]*", message = "First name should consists of letters")
     private String firstName;
-    @Constraints.Pattern(value = "[a-zA-Z ]*", message = "Last name should consists of letters")
     private String lastName;
-
-    @Constraints.Required(message = "Email is required")
-    @Constraints.Email(message = "This should be a valid email address")
     private String email;
-
     private String password;
-
     private int reputation = 0;
 
     public User() {
@@ -38,11 +25,9 @@ public class User {
     }
 
     public String getDisplayName() {
-        if (getFirstName() != null && getLastName() != null)
+        if (getFirstName() != null && !getFirstName().isEmpty() && getLastName() != null && !getLastName().isEmpty())
             return getFirstName() + " " + getLastName();
-        if (getFirstName() != null)
-            return getFirstName();
-        if (getLastName() != null)
+        if (getLastName() != null && !getLastName().isEmpty())
             return getLastName();
 
         return getLogin();

@@ -1,31 +1,42 @@
 package dao;
 
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.UUIDs;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
+import dao.cassandra.CassandraSupport;
 import models.Answer;
 import models.Question;
-import models.QuestionWithAnswers;
 import models.User;
-import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.UUID;
 
 
-@Repository
 public class QuestionDAO {
 
-    private Mapper<Question> getQuestionMapper() {
-        return new MappingManager(CassandraClient.getInstance().getSession()).mapper(Question.class);
+    private final CassandraSupport cassandraSupport;
+
+    @Inject
+    public QuestionDAO(CassandraSupport cSupport) {
+        this.cassandraSupport = cSupport;
     }
 
-    public void createNewQuestion(Question question) {
+
+    private Mapper<Question> getQuestionMapper() {
+        Session session = cassandraSupport.getSession();
+        return new MappingManager(session).mapper(Question.class);
+    }
+
+    public UUID createNewQuestion(Question question) {
         question.setLastUpdated(new Date());
         question.setId(UUIDs.startOf(question.getLastUpdated().getTime()));
         getQuestionMapper().save(question);
 
         // todo add publishing to ranks
+
+        return question.getId();
     }
 
     public void incrementViewsNumber(UUID questionId) {
@@ -33,15 +44,13 @@ public class QuestionDAO {
     }
 
 
-    private QuestionWithAnswers mockedQuestion() {
+    private Question mockedQuestion() {
         // TODO Mock code - remove after real implementation
         User user1 = new User("jk");
         user1.setFirstName("Jan");
         user1.setLastName("Kowalski");
 
         User user2 = new User("aragorn");
-
-        QuestionWithAnswers qa = new QuestionWithAnswers();
 
         Question q = new Question();
         Date now = new Date();
@@ -68,15 +77,14 @@ public class QuestionDAO {
                 "commodi consequatur?");
         a.setVoteCount(0);
         a.setDate(new Date(System.currentTimeMillis()));
-        qa.getAnswers().add(a);
-        qa.setQuestion(q);
+        q.getAnswers().add(a);
 
         // --------------------------------
-        return qa;
+        return q;
     }
 
 
-    public QuestionWithAnswers getQuestion(UUID questionId) {
+    public Question getQuestion(UUID questionId) {
         // TODO: Get the question and answers from the database
 
         Question question = getQuestionMapper().get(questionId);
@@ -91,10 +99,8 @@ public class QuestionDAO {
         question.setAuthor(user1);
 
         // todo add retrieving counters, answers, author etc.
-        QuestionWithAnswers qa = new QuestionWithAnswers();
-        qa.setQuestion(question);
 
-        return qa;
+        return question;
     }
 
     public void incQuestionVotes(UUID questionId) {
@@ -105,7 +111,7 @@ public class QuestionDAO {
         // TODO: implement me
     }
 
-    public void setFollowStatus(String userId, UUID questionId, boolean followState) {
+    public void toggleFollowStatus(String userId, UUID questionId) {
         // TODO: Update follow status in a database
 
     }

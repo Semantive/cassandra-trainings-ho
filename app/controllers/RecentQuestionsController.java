@@ -1,21 +1,26 @@
 package controllers;
 
 import dao.RecentQuestionsDAO;
+import dao.UserDAO;
 import models.Direction;
 import models.Question;
 import models.QuestionList;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Result;
 import views.html.index;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class RecentQuestionsController extends GenericController {
 
-    @Autowired
-    private RecentQuestionsDAO recentQuestionsDAO;
+    private final RecentQuestionsDAO recentQuestionsDAO;
+
+    @Inject
+    public RecentQuestionsController(UserDAO userDAO, RecentQuestionsDAO recentQuestionsDAO) {
+        super(userDAO);
+        this.recentQuestionsDAO = recentQuestionsDAO;
+    }
 
     public Result recent() {
         List<Question> questions = recentQuestionsDAO.getRecentQuestions();

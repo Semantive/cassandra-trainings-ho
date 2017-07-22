@@ -2,17 +2,23 @@ package controllers;
 
 import dao.UserDAO;
 import models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Result;
 import views.html.userprofile;
 import views.html.userprofileedit;
 
-@org.springframework.stereotype.Controller
+import javax.inject.Inject;
+
 public class UserProfileController extends GenericController {
 
-    @Autowired
-    private UserDAO userDAO;
+    private final Form<UserProfileData> formUser;
+
+    @Inject
+    public UserProfileController(FormFactory formFactory, UserDAO userDAO) {
+        super(userDAO);
+        this.formUser = formFactory.form(UserProfileData.class);
+    }
 
     public Result display(String login) {
         User user = userDAO.getUser(login);
@@ -20,24 +26,24 @@ public class UserProfileController extends GenericController {
     }
 
     public Result edit() {
-        User user = getCurrentUser();
-        return ok(userprofileedit.render(Form.form(User.class).fill(user), getAuthentication()));
+        UserProfileData userProfileData = new UserProfileData(getCurrentUser());
+        return ok(userprofileedit.render(formUser.fill(userProfileData), getAuthentication()));
     }
 
     public Result saveProfile() {
-        Form<User> form = Form.form(User.class).bindFromRequest(request());
+        Form<UserProfileData> form = formUser.bindFromRequest();
         if (form.hasErrors())
             return badRequest(userprofileedit.render(form, getAuthentication()));
 
-        String updateLogin = form.apply("login").valueOr("");
+        String updateLogin = form.apply("login").getValue().orElse("");
         String currentLogin = getCurrentUserId();
         if (!updateLogin.equals(currentLogin)) {
-            form.reject("You are allowed to edit only your own profile.");
+            form.withGlobalError("You are allowed to edit only your own profile.");
             return badRequest(userprofileedit.render(form, getAuthentication()));
         }
 
-        if (!userDAO.updateUser(form.get())) {
-            form.reject("User cannot be saved.");
+        if (!userDAO.updateUser(form.get().toUser())) {
+            form.withGlobalError("User cannot be saved.");
             return badRequest(userprofileedit.render(form, getAuthentication()));
         }
 

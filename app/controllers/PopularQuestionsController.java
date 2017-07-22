@@ -1,21 +1,26 @@
 package controllers;
 
 import dao.PopularQuestionsDAO;
+import dao.UserDAO;
 import models.Direction;
 import models.Question;
 import models.QuestionList;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.mvc.Result;
 import views.html.index;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class PopularQuestionsController extends GenericController {
 
-    @Autowired
-    private PopularQuestionsDAO popularQuestionsDAO;
+    private final PopularQuestionsDAO popularQuestionsDAO;
+
+    @Inject
+    public PopularQuestionsController(UserDAO userDAO, PopularQuestionsDAO popularQuestionsDAO) {
+        super(userDAO);
+        this.popularQuestionsDAO = popularQuestionsDAO;
+    }
 
     public Result popular() {
         List<Question> questions = popularQuestionsDAO.getPopularQuestions();

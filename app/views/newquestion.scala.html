@@ -1,4 +1,4 @@
-@(form: Form[Question], auth: Authentication)
+@(form: Form[NewQuestionData], auth: Authentication)
 
 @main("New Question", auth) {
     <div class="page-header">
@@ -7,13 +7,19 @@
 
     <div class="row">
     @helper.form(action = routes.NewQuestionController.saveQuestion(), 'role -> "form", 'class -> "col-lg-6 col-lg-offset-3") {
-        <div class="form-group">
+        <div class="form-group @if(!form("title").errors.isEmpty) {has-error} else {}">
             <label for="questionTitle">Title</label>
-            <input class="form-control" id="questionTitle" type="text" name="title" value="@form("title").value" style="width: 100%;"/>
+            <input class="form-control" id="questionTitle" type="text" name="title" value="@form("title").getValue.orElse("")" style="width: 100%;"/>
+            @for(error <- form("title").errors) {
+                <span class="help-block">@error.format(messages())</span>
+            }
         </div>
-        <div class="form-group">
+        <div class="form-group @if(!form("text").errors.isEmpty) {has-error} else {}">
             <label for="questionText">Text</label>
-            <textarea class="form-control" id="questionText" name="text" rows="10">@form("text").value</textarea>
+            <textarea class="form-control" id="questionText" name="text" rows="10">@form("text").getValue.orElse("")</textarea>
+            @for(error <- form("text").errors) {
+                <span class="help-block">@error.format(messages())</span>
+            }
         </div>
         <div>
             <button type="submit" class="btn btn-primary btn-lg pull-right">Add a Question</button>

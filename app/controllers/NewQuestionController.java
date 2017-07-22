@@ -1,36 +1,48 @@
 package controllers;
 
 import dao.QuestionDAO;
+import dao.UserDAO;
 import models.Question;
-import org.springframework.beans.factory.annotation.Autowired;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Result;
 import views.html.newquestion;
+import views.html.register;
 
-import java.util.Date;
+import javax.inject.Inject;
+import java.util.UUID;
 
-@org.springframework.stereotype.Controller
 public class NewQuestionController extends GenericController {
 
-    @Autowired
-    private QuestionDAO questionDAO;
+    private final QuestionDAO questionDAO;
 
-    @Autowired
+    private final Form<NewQuestionData> formQuestion;
     private QuestionController questionController;
 
+    @Inject
+    public NewQuestionController(FormFactory formFactory, UserDAO userDAO,
+                                 QuestionDAO questionDAO, QuestionController questionController) {
+        super(userDAO);
+        this.formQuestion = formFactory.form(NewQuestionData.class);
+        this.questionDAO = questionDAO;
+        this.questionController = questionController;
+    }
+
     public Result newQuestionForm() {
-        Form<Question> form = new Form<>(Question.class);
-        return ok(newquestion.render(form, getAuthentication()));
+        return ok(newquestion.render(formQuestion, getAuthentication()));
     }
 
     public Result saveQuestion() {
-        Form<Question> form = new Form<>(Question.class).bindFromRequest(request());
-        Question question = form.get();
-        question.setAuthor(getCurrentUser());
+        Form<NewQuestionData> form = formQuestion.bindFromRequest();
+        if (form.hasErrors()) {
+            return badRequest(newquestion.render(form, getAuthentication()));
+        }
 
-        questionDAO.createNewQuestion(question);
+        NewQuestionData newQuestionData = form.get();
+        Question question = newQuestionData.toQuestion(getCurrentUser().getLogin());
+        UUID questionId = questionDAO.createNewQuestion(question);
 
-        return questionController.display(question.getId());
+        return questionController.display(questionId);
     }
 
 }

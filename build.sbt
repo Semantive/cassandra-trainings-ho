@@ -1,4 +1,4 @@
-name := "cassandra-trainings"
+name := "cassandra-trainings-ho"
 
 version := "1.0-SNAPSHOT"
 
